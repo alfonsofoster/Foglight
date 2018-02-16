@@ -1,9 +1,11 @@
 #Script Road Map
 
-- Verify if Server is Physical or Virtual
-- Check if its a Vmware or Hyper-V
+- Verify if Server is Physical or Virtual - DONE
+- Check if its a Vmware or Hyper-V - DONE
+- Check Memory and CPU reservation for VMware Vms - DONE
+- Check Memory and CPU for Hyper-V Vms
 - Check if any Antivirus is running in the server
-- Check the User that is running the FGlam Service
+- Check the User that is running the Fglam Service
 - Check the permissions of the User that is running the fglam into the Fglam folder
 - Check if ibengine.exe is running
 - Check the JVM settings of the fglam
