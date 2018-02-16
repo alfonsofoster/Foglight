@@ -1,0 +1,12 @@
+#Script Road Map
+
+- Verify if Server is Physical or Virtual
+- Check if its a Vmware or Hyper-V
+- Check if any Antivirus is running in the server
+- Check the User that is running the FGlam Service
+- Check the permissions of the User that is running the fglam into the Fglam folder
+- Check if ibengine.exe is running
+- Check the JVM settings of the fglam
+- Check if Visual C++ is installed.
+- Check if the Windows Firewall is Activated.
+- Check where the fglam is installed.
