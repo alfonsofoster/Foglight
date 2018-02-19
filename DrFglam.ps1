@@ -50,14 +50,14 @@ if (Exists-Dir($path)) {
     $mem_value = [int]$res_mem
     if($mem_value -gt 0){ Write-Host ("Memory reserved is: " + $res_mem + " MB") -ForegroundColor Green }
     else { Write-Host ("Memory is NOT Reserved") -ForegroundColor Red }
-} 
+    } 
 else { Write-Host("VMware Tools is not Installed") -ForegroundColor Red } 
 }
 
 #Function for Check Visual C++ 2010
 function VisualC-Check() {
-$installed = (Get-ChildItem HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" }).Length -gt 0;
-if($installed) { Write-Host ("Microsoft Visual C++ 2010 is Installed") -ForegroundColor Green }
+$vc_installed = (Get-ChildItem HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" }).Length -gt 0;
+if($vc_installed) { Write-Host ("Microsoft Visual C++ 2010 is Installed") -ForegroundColor Green }
 else { Write-Host ("Microsoft Visual C++ 2010 is NOT Installed") -ForegroundColor Red }
 }
 
@@ -70,8 +70,16 @@ if($server_model -like "VMware*" -or $server_model -like "Virtual Machine"){
     else { Check-HyperV }
 }
 else { Write-Host("This Host is a Physical Machine.") -ForegroundColor Magenta }
-} #Closing ServerType-Check function
+} 
 
+#Function that check if there is any Antivirus running in the server
+function AV-Check(){
+$av_keywords = "End point" , "Antivirus" , "Securirty" , "Endpoint"
+$av_installed = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName
+if(($av_found = $av_keywords | ?{$av_installed -like "*$_*"})) { Write-Host($av_found) }
+else { Write-Host("No Antivirus Software has been found.") }
+}
 
-ServerType-Check #Calling Function to check the Type of the Server
-VisualC-Check #Calling the Function to check if Visual C++ 2010 is installed
+ServerType-Check #Calling Function to check the Type of the Server.
+VisualC-Check #Calling the Function to check if Visual C++ 2010 is installed.
+AV-Check #Calling the Function to check if there is any AV running in the server.

@@ -12,3 +12,4 @@
 - Check if Visual C++ is installed.
 - Check if the Windows Firewall is Activated.
 - Check where the fglam is installed.
+- Delete old CARTRIDGE Logs (Agents Folder, Logs Folder)
