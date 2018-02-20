@@ -24,6 +24,7 @@
 
 $path = "C:\Program Files\VMware\VMware Tools\"  #Path where VMware tools are Installed 
 $program = 'Microsoft Visual C++ 2010  x64' #Correct Display Name  of the MS VC 2010 
+$hypervisors = "VMware" , "Virtual Machine"  #Hypervisors Model names
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 
@@ -35,7 +36,7 @@ function Exists-Dir($path) {
 
 #Function to check Memory and CPU in a Hyper-V VM
 Function Check-HyperV(){
-Write-Host ("Nothing to do yet in this Hyper-V") -ForegroundColor Green
+Write-Host ("Hypervisor: Hyper-V") -ForegroundColor Yellow
 }
 
 #Check if VMware Tools is Installed and see if the VM has Memory and CPU reserved 
@@ -55,7 +56,7 @@ else { Write-Host("VMware Tools is not Installed") -ForegroundColor Red }
 }
 
 #Function for Check Visual C++ 2010
-function VisualC-Check() {
+function Visualc-Check() {
 $vc_installed = (Get-ChildItem HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.GetValue( "DisplayName" ) -like "*$program*" }).Length -gt 0;
 if($vc_installed) { Write-Host ("Microsoft Visual C++ 2010 is Installed") -ForegroundColor Green }
 else { Write-Host ("Microsoft Visual C++ 2010 is NOT Installed") -ForegroundColor Red }
@@ -64,7 +65,7 @@ else { Write-Host ("Microsoft Visual C++ 2010 is NOT Installed") -ForegroundColo
 #Function that check the server type
 function ServerType-Check(){
 $server_model = (Get-WmiObject -Class Win32_ComputerSystem).Model 
-if($server_model -like "VMware*" -or $server_model -like "Virtual Machine"){
+if($hypervisors | ?{$server_model -like "*$_*"}){
     Write-Host("This Host is a Virtual Machine.") -ForegroundColor Magenta
     if($server_model -like "VMware*") { Vmware-Check }
     else { Check-HyperV }
@@ -74,12 +75,15 @@ else { Write-Host("This Host is a Physical Machine.") -ForegroundColor Magenta }
 
 #Function that check if there is any Antivirus running in the server
 function AV-Check(){
-$av_keywords = "End point" , "Antivirus" , "Securirty" , "Endpoint"
-$av_installed = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName
-if(($av_found = $av_keywords | ?{$av_installed -like "*$_*"})) { Write-Host($av_found) }
-else { Write-Host("No Antivirus Software has been found.") }
+(Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName| ForEach-Object {
+    If($_ -match "End point" -or $_ -match "Antivirus" -or $_ -match "Malware") 
+    { $av_found = $_ }
+}
+if($av_found) { Write-Host("This is an Antivirus? ---> " + $av_found) -ForegroundColor Red }
+else { Write-Host("No Antivirus Software has been found.") -ForegroundColor Green }
 }
 
+Clear-Host # function that removes all text from the current display.
 ServerType-Check #Calling Function to check the Type of the Server.
-VisualC-Check #Calling the Function to check if Visual C++ 2010 is installed.
-AV-Check #Calling the Function to check if there is any AV running in the server.
+Visualc-Check #Calling the Function to check if Visual C++ 2010 is installed.
+AV-Check #Calling the Function to check if there is any AV running in the server. 

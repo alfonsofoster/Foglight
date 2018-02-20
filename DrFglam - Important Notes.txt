@@ -15,3 +15,9 @@ Select PSComputername,
 
 
 Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
+
+
+
+
+#$av_installed = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName
+#if(($av_found = $av_keywords | ?{$av_installed -like "*$_*"} )) { Write-Host($av_found.DisplayName) -ForegroundColor Green}
