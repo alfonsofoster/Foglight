@@ -21,3 +21,26 @@ Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
 
 #$av_installed = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName
 #if(($av_found = $av_keywords | ?{$av_installed -like "*$_*"} )) { Write-Host($av_found.DisplayName) -ForegroundColor Green}
+
+
+
+#Delete files:
+
+function Old-Files() {
+Clear-Host
+($old_files_list = gci "C:\Program Files\Common Files\Dell\Foglight Agent Manager\state\default\agents\fb8be857-fbcf-4747-973d-295a8570e581\DB_SQL_Server\Unversioned" -Recurse|
+where{-not $_.PsIsContainer}| sort CreationTime -desc | select -Skip 100 |Select Name,LastWriteTime,Directory |Format-Table -Property Name,LastWriteTime,Directory -AutoSize | Out-String -Width 700)
+
+Write-Host($old_files)
+
+gci "C:\Program Files\Common Files\Dell\Foglight Agent Manager\state\default\agents\fb8be857-fbcf-4747-973d-295a8570e581\DB_SQL_Server\5.7.5.36" -Recurse|
+where{-not $_.PsIsContainer}| sort CreationTime -desc |
+select -Skip 100 |Select Name,LastWriteTime,Directory | Format-Table -Property Name,LastWriteTime,Directory -AutoSize |
+Out-File -filepath "c:\DrFglam-Output.txt" -width 700
+
+}
+Old-Files
+
+
+Clear-Host
+Get-WmiObject win32_service | ?{$_.Name -like '*Agent Manager*'} | select Name, DisplayName, @{Name="Path"; Expression={$_.PathName.split('"')[1]}} | Format-List

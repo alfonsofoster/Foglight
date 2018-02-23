@@ -3,13 +3,13 @@
 - Verify if Server is Physical or Virtual - DONE
 - Check if its a Vmware or Hyper-V - DONE
 - Check Memory and CPU reservation for VMware Vms - DONE
+- Check if Visual C++ is installed - DONE
+- Check if any Antivirus is running in the server - DONE
+- Delete old CARTRIDGE Logs (Agents Folder, Logs Folder)
 - Check Memory and CPU for Hyper-V Vms
-- Check if any Antivirus is running in the server
 - Check the User that is running the Fglam Service
 - Check the permissions of the User that is running the fglam into the Fglam folder
 - Check if ibengine.exe is running
 - Check the JVM settings of the fglam
-- Check if Visual C++ is installed.
 - Check if the Windows Firewall is Activated.
-- Check where the fglam is installed.
-- Delete old CARTRIDGE Logs (Agents Folder, Logs Folder)
+- Check where the fglam is installed (PATH).
