@@ -50,6 +50,26 @@ Function Agents-Folders($fglam_path) {
     return $fglam_agents;
 }
 
+Function CheckTo-Delete ($log){
+  if(Exists-Dir($log)) {
+        if(Exists-Dir($log)) {
+            Write-Host("Fglam LOG Folder: ") -ForegroundColor Green -NoNewline ; Write-Host($log + "`n") 
+            $old_folder = (gci "$log" | ?{$_.PsIsContainer}| sort LastWriteTime -desc | select -Skip 1).Name #Getting the NAME of all the current folders except the LastUpdated one.
+            $deleting = $old_folder | Format-List | Out-String|% {$_}  #Printing the folder that we are going to delete
+            if($deleting) { 
+                Write-Host("Removing Folder:") -ForegroundColor Magenta
+                Write-Host($deleting) 
+            }
+            else { 
+            Write-Host("Nothing to Remove `n") -ForegroundColor Magenta 
+            }
+    $current_log_folder = (gci "$log" | ?{$_.PsIsContainer} | sort @{Expression={$_.LastWriteTime}; Ascending=$false}| select -first 1).Name #Obtaining the LastUpdated Folder Name 
+    Write-Host("Keeping Folder (Current Cartridge): ") -ForegroundColor Green -NoNewline; Write-Host($current_log_folder + "`n") -ForegroundColor Yellow
+        } 
+    }
+  }
+ 
+
 #Function that Check for Logs of an External Agent Manager
 function External-Fglam() {
     $paths = (Get-WmiObject win32_service | ?{$_.Name -like '*Agent Manager*'}).PathName 
@@ -61,22 +81,7 @@ function External-Fglam() {
             Write-Host($fglam_path + "`n") #Printing FAglam ROOT folder 
             $fglam_logs = Logs-Folders($fglam_path)
             ForEach($log in $fglam_logs){
-                if(Exists-Dir($log)) {
-                    if(Exists-Dir($log)) {
-                        Write-Host("Fglam LOG Folder: ") -ForegroundColor Green -NoNewline ; Write-Host($log + "`n") 
-                        $old_folder = (gci "$log" | ?{$_.PsIsContainer}| sort LastWriteTime -desc | select -Skip 1).Name #Getting the NAME of all the current folders except the LastUpdated one.
-                        $deleting = $old_folder | Format-List | Out-String|% {$_}  #Printing the folder that we are going to delete
-                        if($deleting) { 
-                            Write-Host("Removing Folder:") -ForegroundColor Magenta
-                            Write-Host($deleting) 
-                        }
-                        else { 
-                        Write-Host("Nothing to Remove `n") -ForegroundColor Magenta 
-                        }
-            $current_log_folder = (gci "$log" | ?{$_.PsIsContainer} | sort @{Expression={$_.LastWriteTime}; Ascending=$false}| select -first 1).Name #Obtaining the LastUpdated Folder Name 
-            Write-Host("Keeping Folder (Current Cartridge): ") -ForegroundColor Green -NoNewline; Write-Host($current_log_folder + "`n") -ForegroundColor Yellow
-                    } 
-                } 
+              CheckTo-Delete ($log)
              }
              $fglam_agents = Agents-Folders($fglam_path)
              ForEach($agents in $fglam_agents){
@@ -110,39 +115,24 @@ Embedded-Fglam #Calling the Function to check if there is any Embedded FAglam
 function Embedded-Fglam () {
     $path = Get-WmiObject win32_service | ?{$_.Name -like 'Foglight'}
     if($path) {
-            $path_list = ($path.PathName.split('""')[1]) 
-            $path_list = $path_list.Substring(0, $path_list.lastIndexOf('bin')) 
-            $fglam_config_file = $path_list + "\config\server.config" 
-            $is_embedded = (Get-Content $fglam_config_file | select-string 'server.fglam.embedded = "true";' -SimpleMatch)
-                if($is_embedded) {
-                    Write-Host("Fglam Embedded is Enable `n") -ForegroundColor Green 
-                    Write-Host("Agent Manager ROOT folder is located at: ") -ForegroundColor Green -NoNewline; 
-                    $fglam_path = $path_list +"fglam\"
-                    Write-Host( $fglam_path + "`n")
-                    $fglam_logs = Logs-Folders($fglam_path)
-                    ForEach($log in $fglam_logs){
-                        if(Exists-Dir($log)) {
-                            if(Exists-Dir($log)) {
-                                Write-Host("Fglam Log Folder: ") -ForegroundColor Green -NoNewline ; Write-Host($log + "`n") 
-                                $old_folder = (gci "$log" | ?{$_.PsIsContainer}| sort LastWriteTime -desc | select -Skip 1).Name #Getting the Name
-                                $deleting = $old_folder | Format-List | Out-String|% {$_}  #Printing the folder that we are going to delete
-                                if($deleting) { 
-                                    Write-Host("Removing Folder:") -ForegroundColor Magenta
-                                    Write-Host($deleting)         
-                                    #$deleting_size = "{0:N2}" -f ((Get-ChildItem -path $log -recurse | Measure-Object -property length -sum ).sum /1MB) + " MB" 
-                                    #Write-Host("Size: " + $deleting_size )      
-                                }
-                                else { Write-Host("Nothing to Remove `n") -ForegroundColor Magenta }
-                            $current_log_folder = (gci "$log" | ?{$_.PsIsContainer} | sort @{Expression={$_.LastWriteTime}; Ascending=$false}| select -first 1).Name #we selected the first folder 
-                            Write-Host("Keeping Folder (Current Cartridge): ") -ForegroundColor Green -NoNewline; Write-Host($current_log_folder + "`n") -ForegroundColor Yellow
-                            } #En of IF for fglam logs path
-                        } #End of IF for fglam root path
-                        #End of Foreach
+        $path_list = ($path.PathName.split('""')[1]) 
+        $path_list = $path_list.Substring(0, $path_list.lastIndexOf('bin')) 
+        $fglam_config_file = $path_list + "\config\server.config" 
+        $is_embedded = (Get-Content $fglam_config_file | select-string 'server.fglam.embedded = "true";' -SimpleMatch)
+            if($is_embedded) {
+                Write-Host("Fglam Embedded is Enable `n") -ForegroundColor Green 
+                Write-Host("Agent Manager ROOT folder is located at: ") -ForegroundColor Green -NoNewline; 
+                $fglam_path = $path_list +"fglam\"
+                Write-Host( $fglam_path + "`n")
+                $fglam_logs = Logs-Folders($fglam_path)
+                ForEach($log in $fglam_logs){
+                    CheckTo-Delete ($log) 
                 }
-        }
+            }
     }
     else { 
-    Write-Host("No Embedded Fglam Found either ...") -ForegroundColor Yellow }
+    Write-Host("No Embedded Fglam Found either ...") -ForegroundColor Yellow 
+    }
 }
 
 Clear-Host
