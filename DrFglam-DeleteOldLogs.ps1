@@ -1,5 +1,4 @@
-﻿
-<#
+﻿<#
 .SYNOPSIS
   Check old logs files of Foglight for Databases Cartridge.
 .DESCRIPTION
@@ -25,7 +24,7 @@
 
 $folders = "DB_SQL_Server", "DB_Oracle" , "DB_DB2" , "HostAgents"
 $folder_path_logs = "state\default\logs\fb8be857-fbcf-4747-973d-295a8570e581\"
-$folder_path_agents = "state\default\logs\fb8be857-fbcf-4747-973d-295a8570e581\"
+$folder_path_agents = "state\default\agents\fb8be857-fbcf-4747-973d-295a8570e581\"
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 
@@ -52,7 +51,7 @@ Function Logs-Folders($fglam_path) {
 Function Agents-Folders($fglam_path) {
     $fglam_agents = @()
     foreach($i in $folders) {
-        $fglam_agents += $fglam_path + $folder_path_agents + $i 
+        $fglam_agents += $fglam_path + $folder_path_agents + $i
     }
     return $fglam_agents; 
 }
@@ -93,16 +92,16 @@ function External-Fglam() {
                 CheckTo-Delete ($log)
             }
             $fglam_agents = Agents-Folders($fglam_path)
-            ForEach($agents in $fglam_agents){
-                CheckTo-Delete ($agents)   
-            } 
+            ForEach($log in $fglam_agents){
+                CheckTo-Delete ($log)
+            }  
+             
         }
     } 
 else { 
     Write-Host("No external Fglam running as a Service here!... Checking if its Embedded... `n") -ForegroundColor Yellow 
     Embedded-Fglam #Calling the Function to check if there is any Embedded FAglam
 }
-#Remove-Item $old_folder -Recurse -Force 
 }
 
 
