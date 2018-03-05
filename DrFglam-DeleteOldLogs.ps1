@@ -36,10 +36,9 @@ function Exists-Dir($path) {
     else { 
         return $false; 
         } 
-} #End of Function Exists-Dir
+}
 
-
-#Function that return the Logs folders
+#Function that return the FglAM "Logs" folders
 Function Logs-Folders($fglam_path) {
     $fglam_logs = @()
     foreach($i in $folders) {    
@@ -48,6 +47,7 @@ Function Logs-Folders($fglam_path) {
     return $fglam_logs;
 }
 
+#Function that return the FglAM "Agents" folders
 Function Agents-Folders($fglam_path) {
     $fglam_agents = @()
     foreach($i in $folders) {
@@ -56,10 +56,9 @@ Function Agents-Folders($fglam_path) {
     return $fglam_agents; 
 }
 
-
-#Function that check what folder we must delete
+#Function that check what folders we must delete
 Function CheckTo-Delete ($log){
-  if(Exists-Dir($log)) {
+    if(Exists-Dir($log)) {
         if(Exists-Dir($log)) {
             Write-Host("Fglam Folder: ") -ForegroundColor Green -NoNewline ; Write-Host($log + "`n") 
             $old_folder = (gci "$log" | ?{$_.PsIsContainer}| sort LastWriteTime -desc | select -Skip 1).Name #Getting the NAME of all the current folders except the LastUpdated one.
@@ -75,10 +74,9 @@ Function CheckTo-Delete ($log){
     Write-Host("Keeping Folder (Current Cartridge): ") -ForegroundColor Green -NoNewline; Write-Host($current_log_folder + "`n") -ForegroundColor Yellow
         } 
     }
-  }
+}
  
-
-#Function that Check for Logs of an External Agent Manager
+#Function that Check for Logs in "Logs" and "Agents" folders of an External Agent Manager
 function External-Fglam() {
     $paths = (Get-WmiObject win32_service | ?{$_.Name -like '*fglam*'}).PathName 
     if ($paths){
@@ -98,10 +96,9 @@ function External-Fglam() {
              
         }
     } 
-else { 
+    else { 
     Write-Host("No external Fglam running as a Service here!... Checking if its Embedded... `n") -ForegroundColor Yellow 
-    Embedded-Fglam #Calling the Function to check if there is any Embedded FAglam
-}
+    }
 }
 
 
@@ -125,12 +122,12 @@ function Embedded-Fglam () {
                 ForEach($agents in $fglam_agents){
                     CheckTo-Delete ($agents)
                 }
+            }
     }
     else { 
-    Write-Host("No Embedded Fglam Found either ...") -ForegroundColor Yellow 
-    }
+    Write-Host("No Embedded Fglam Found! ...") -ForegroundColor Yellow 
     }
 }
 
-Clear-Host #Clear eny text from the Powershell window
-External-Fglam  #Calling the external fglam function
+External-Fglam 
+Embedded-Fglam
