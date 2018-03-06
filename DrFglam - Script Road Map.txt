@@ -12,4 +12,4 @@
 - Check if ibengine.exe is running
 - Check the JVM settings of the fglam
 - Check if the Windows Firewall is Activated.
-- Check where the fglam is installed (PATH).
+- Check where the fglam is installed (PATH) - DONE
