@@ -1,4 +1,6 @@
-﻿<#
+﻿#requires -version 4
+
+<#
 .SYNOPSIS
   Check old logs files of Foglight for Databases Cartridge.
 .DESCRIPTION
@@ -97,11 +99,11 @@ function External-Fglam() {
         }
     } 
     else { 
-    Write-Host("No external Fglam running as a Service here!... Checking if its Embedded... `n") -ForegroundColor Yellow 
+    Write-Host("No external FglAM running as a Service here!... Checking if its Embedded... `n") -ForegroundColor Yellow 
     }
 }
 
-
+#Function that Check if a FglAM is running embedded  and check in "Logs" and "Agents" folders of an External Agent Manager
 function Embedded-Fglam () {
     $path = Get-WmiObject win32_service | ?{$_.Name -like 'Foglight'}
     if($path) {
@@ -110,7 +112,7 @@ function Embedded-Fglam () {
         $fglam_config_file = $path_list + "\config\server.config" 
         $is_embedded = (Get-Content $fglam_config_file | select-string 'server.fglam.embedded = "true";' -SimpleMatch) #Reading server.config file to see if the embedded fglam is ON
             if($is_embedded) {
-                Write-Host("Fglam Embedded is ENABLED `n") -ForegroundColor Green 
+                Write-Host("FglAM Embedded is ENABLED `n") -ForegroundColor Green 
                 Write-Host("Agent Manager ROOT folder is located at: ") -ForegroundColor Green -NoNewline; 
                 $fglam_path = $path_list +"fglam\"
                 Write-Host($fglam_path + "`n")
@@ -125,9 +127,11 @@ function Embedded-Fglam () {
             }
     }
     else { 
-    Write-Host("No Embedded Fglam Found! ...") -ForegroundColor Yellow 
+    Write-Host("No Embedded FglAM Found! ...") -ForegroundColor Yellow 
     }
 }
+
+#-----------------------------------------------------------[Execution]------------------------------------------------------------
 
 External-Fglam 
 Embedded-Fglam
