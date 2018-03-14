@@ -1,16 +1,22 @@
-﻿$Username = "monitoringtech"
-$Password = "!Quest4ever"
-$FilePath = "/monitoring/secure/"
-$ServerName = "ftpamer.quest.com"
+﻿
+Add-PSSnapin -Name ktools.powershell.sftp
 
-$webclient = New-Object System.Net.WebClient
+$sftpHost = "ftpamer.quest.com"
 
+$port = "122"
 
-$webclient.Credentials = New-Object System.Net.NetworkCredential($UserName, $Password)
- 
+$userName = "monitoringtech"
 
-$file = $FilePath
+$userPassword = "!Quest4ever"
 
-$uri = New-Object System.Uri(“https://ftpamer.quest.com/jola.txt”)
+$files = "C:\file1.txt" #specify full path to  your files here
 
-$webclient.UploadFile($uri, $FilePath)
+$sftp = Open-SFTPServer -serverAddress $sftpHost -userName $userName -userPassword $userPassword
+foreach($file in $files){
+
+$sftp.Put($file, "/monitoring/secure")
+}
+
+#Close the SFTP connection
+
+$sftp.Close()

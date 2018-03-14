@@ -5,7 +5,7 @@
 - Check Memory and CPU reservation for VMware Vms - DONE
 - Check if Visual C++ is installed - DONE
 - Check if any Antivirus is running in the server - DONE
-- Delete old CARTRIDGE Logs (Agents Folder, Logs Folder)
+- Delete old CARTRIDGE Logs (Agents Folder, Logs Folder) - DONE
 - Check Memory and CPU for Hyper-V Vms
 - Check the User that is running the Fglam Service
 - Check the permissions of the User that is running the fglam into the Fglam folder
