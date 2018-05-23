@@ -100,10 +100,8 @@ function ServerType-Check(){
 #Function that check if there is any Antivirus running in the server
 function AV-Check(){
     (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName| 
-    ForEach-Object { If($_ -match "End point" -or $_ -match "Antivirus" -or $_ -match "Malware") { 
-    $av_found = $_ 
-    }
-    }
+    ForEach-Object { If($_ -match "End point" -or $_ -match "Antivirus" -or $_ -match "Malware" -or $_ -match "Endpoint) { $av_found = $_ }
+					}
     if($av_found) { 
     Write-Host("This is an Antivirus? ---> " + $av_found) -ForegroundColor Red 
     }

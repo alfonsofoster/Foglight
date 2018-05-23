@@ -12,7 +12,7 @@
 .OUTPUTS
   All the Information will be show in the Powershell window.
 .NOTES
-  Version:        1.0
+  Version:        1.2
   Author:         Alfonso Foster
   Creation Date:  28/Feb/2018
   Purpose/Change: Initial script development
@@ -62,12 +62,15 @@ Function Agents-Folders($fglam_path) {
 Function CheckTo-Delete ($log){
     if(Exists-Dir($log)) {
         if(Exists-Dir($log)) {
-            Write-Host("Fglam Folder: ") -ForegroundColor Green -NoNewline ; Write-Host($log + "`n") 
-            $old_folder = (gci "$log" | ?{$_.PsIsContainer}| sort LastWriteTime -desc | select -Skip 1).Name #Getting the NAME of all the current folders except the LastUpdated one.
-            $deleting = $old_folder | Format-List | Out-String|% {$_}  #Printing the folder that we are going to delete
-            if($deleting) { 
-                Write-Host("Removing Folder:") -ForegroundColor Magenta
-                Write-Host($deleting) 
+            Write-Host("Fglam Folder: ") -ForegroundColor Green -NoNewline ; Write-Host($log + "`n")            
+            $old_folder =   @(Get-ChildItem "$log" | ?{$_.PsIsContainer}| Foreach-Object {$_.FullName} |sort LastWriteTime -desc | select -Skip 1 )
+            $deleting = $old_folder #| Format-List | Out-String|% {$_})  #Printing the folder that we are going to delete
+            if($deleting) {
+                Write-Host("Removing this Old Folder:") -ForegroundColor Magenta
+                foreach($x in $deleting) { 
+                    Write-Host($x)               
+                    Remove-Item $x -Force -Recurse
+                } 
             }
             else { 
                 Write-Host("Nothing to Remove `n") -ForegroundColor Magenta 
@@ -132,6 +135,6 @@ function Embedded-Fglam () {
 }
 
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
-
+Clear-Host
 External-Fglam 
 Embedded-Fglam
