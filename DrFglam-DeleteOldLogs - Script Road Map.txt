@@ -1,0 +1,10 @@
+#Script Road Map
+
+- Check the size of the Deleted/Moved Folders - 
+- Delete old CARTRIDGE Logs (Agents Folder, Logs Folder) (Db2, ORacle, SQL Server, VMware and Windows Agents) - 85%
+- Keep the Current cartridge Folder - DONE
+- Check where the fglam is installed (PATH) - DONE
+- Check the path where the Fglam is Installed - DONE
+- Add params option to select if you are going to "move" or "delete" the logs - 
+- Create a .exe of the script - 
+- (Optional) Deleted logs from Current cartridge but with more than 3 months of creation - 
