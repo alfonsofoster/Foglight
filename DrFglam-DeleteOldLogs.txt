@@ -12,7 +12,7 @@
 .OUTPUTS
   All the Information will be show in the Powershell window.
 .NOTES
-  Version:        0.2
+  Version:        1.2
   Author:         Alfonso Foster
   Creation Date:  28/Feb/2018
   Purpose/Change: Initial script development
@@ -20,6 +20,7 @@
 .EXAMPLE
   Open a Powershell Windows "As Administrator", locate the Script and execute it.
 #>
+
 
 #---------------------------------------------------------[Initialisations]-------------------------------------------------------
 
@@ -137,4 +138,3 @@ function Embedded-Fglam () {
 Clear-Host
 External-Fglam 
 Embedded-Fglam
-# purueba
